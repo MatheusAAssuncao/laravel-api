@@ -1,0 +1,36 @@
+version: '3.3'
+services:
+    laravel-docker:
+        container_name: laravel-docker
+        build: 
+            context: .
+            dockerfile: ./docker/nginx/Dockerfile
+        user: root
+        ports:
+            - 9001:80
+        #volumes:
+        #    - ./:/usr/share/nginx/html/:rw
+        restart: always
+        depends_on:
+            - database-docker
+        networks:
+            - laravel-network
+    database-docker:
+        container_name: database-docker
+        build: 
+            context: .
+            dockerfile: ./docker/mysql/Dockerfile
+        user: root
+        ports:
+            - 9002:3306
+        environment:
+            MYSQL_ROOT_PASSWORD: root
+            MYSQL_DATABASE: jobs
+            MYSQL_USER: admin
+            MYSQL_PASSWORD: root
+        networks:
+            - laravel-network
+
+networks:
+    laravel-network:
+        driver: bridge
