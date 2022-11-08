@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Job;
+use Illuminate\Http\Request;
 
 class JobController extends Controller
 {
@@ -13,10 +14,26 @@ class JobController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $jobs = Job::with('languages', 'tools')->get();
-        return response()->json($jobs);
+        $jobs = Job::with('languages', 'tools');
+
+        if ($request->has('role')) {
+            $jobs->where('role', $request->role);
+        }
+
+        if ($request->has('level')) {
+            $jobs->where('level', $request->level);
+        }
+
+        if ($request->has('contract')) {
+            $jobs->where('contract', $request->contract);
+        }
+
+        return response()->json([
+            'status' => true,
+            'data' => $jobs->get()
+        ], 200);
     }
 
     /**
@@ -31,7 +48,7 @@ class JobController extends Controller
 
         return response()->json([
             'status' => true,
-            'data' => $job
+            'data' => !empty($job) ? $job : []
         ], 200);
     }
 }
