@@ -8,4 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class Tool extends Model
 {
     use HasFactory;
+
+    public function jobs()
+    {
+        return $this->belongsToMany(Job::class);
+    }
 }

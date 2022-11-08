@@ -3,84 +3,35 @@
 namespace App\Http\Controllers;
 
 use App\Models\Job;
-use App\Http\Requests\StoreJobRequest;
-use App\Http\Requests\UpdateJobRequest;
 
 class JobController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * It can be filtered by “role”, “level”, “contract”, “languages” and “tools”. You can
+     * send multiple filters in a request (ex: “role” and “level”). You can send multiple values per
+     * filter (ex: In level you can send the value for “Senior” and “Junior”).
      *
      * @return \Illuminate\Http\Response
      */
     public function index()
     {
-        //
+        $jobs = Job::with('languages', 'tools')->get();
+        return response()->json($jobs);
     }
 
     /**
-     * Show the form for creating a new resource.
+     * An endpoint for the job detail. It should receive the job id and return it.
      *
+     * @param  integer  $id
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function show(int $id)
     {
-        //
-    }
+        $job = Job::with('tools', 'languages')->find($id);
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \App\Http\Requests\StoreJobRequest  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(StoreJobRequest $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Job  $job
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Job $job)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Job  $job
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Job $job)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \App\Http\Requests\UpdateJobRequest  $request
-     * @param  \App\Models\Job  $job
-     * @return \Illuminate\Http\Response
-     */
-    public function update(UpdateJobRequest $request, Job $job)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Job  $job
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Job $job)
-    {
-        //
+        return response()->json([
+            'status' => true,
+            'data' => $job
+        ], 200);
     }
 }

@@ -13,10 +13,10 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('languages', function (Blueprint $table) {
+        Schema::create('job_tool', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->timestamps();
+            $table->foreignId('job_id')->constrained();
+            $table->foreignId('tool_id')->constrained();
         });
     }
 
@@ -27,6 +27,7 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('languages');
+        Schema::disableForeignKeyConstraints();
+        Schema::dropIfExists('job_tool');
     }
 };

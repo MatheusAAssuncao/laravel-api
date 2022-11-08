@@ -3,6 +3,8 @@
 namespace Database\Seeders;
 
 use App\Models\Job;
+use App\Models\Language;
+use App\Models\Tool;
 use Illuminate\Database\Seeder;
 
 class JobSeeder extends Seeder
@@ -32,13 +34,28 @@ class JobSeeder extends Seeder
             ]);
         }
 
-        // foreach ($data as $user) {
-        //     foreach ($user['connections'] as $connection) {
-        //         UserConnection::create([
-        //             'user_id' => $user['id'],
-        //             'friend_id' => $connection,
-        //         ]);
-        //     }
-        // }
+        $allLanguages = $allTools = [];
+        foreach ($data as $job) {
+            $allLanguages = array_unique(array_merge($job['languages'], $allLanguages));
+            $allTools = array_unique(array_merge($job['tools'], $allTools));
+        }
+        
+        foreach ($allLanguages as $language) {
+            Language::create([
+                'name' => $language,
+            ]);
+        }
+
+        foreach ($allTools as $tool) {
+            Tool::create([
+                'name' => $tool,
+            ]);
+        }
+
+        foreach ($data as $job) {
+            $_job = Job::findOrFail($job['id']);
+            $_job->languagesMany()->attach(Language::where('name', $job['languages'])->get());
+            $_job->toolsMany()->attach(Tool::whereIn('name', $job['tools'])->get());
+        }
     }
 }
