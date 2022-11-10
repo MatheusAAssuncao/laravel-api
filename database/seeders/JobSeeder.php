@@ -28,7 +28,7 @@ class JobSeeder extends Seeder
                 'position' => $job['position'],
                 'role' => $job['role'],
                 'level' => $job['level'],
-                'postedAt' => $job['postedAt'],
+                'postedAt' => $this->_getDateTimeFromString($job['postedAt']),
                 'contract' => $job['contract'],
                 'location' => $job['location'],
             ]);
@@ -54,8 +54,26 @@ class JobSeeder extends Seeder
 
         foreach ($data as $job) {
             $_job = Job::findOrFail($job['id']);
-            $_job->languagesMany()->attach(Language::where('name', $job['languages'])->get());
-            $_job->toolsMany()->attach(Tool::whereIn('name', $job['tools'])->get());
+            $_job->languages()->attach(Language::where('name', $job['languages'])->get());
+            $_job->tools()->attach(Tool::whereIn('name', $job['tools'])->get());
         }
+    }
+
+    protected function _getDateTimeFromString($postedAt)
+    {
+        $times = [
+            'd' => 'day',
+            'w' => 'week',
+            'mo' => 'month',
+        ];
+
+        $postedAt = str_replace(" ago", "", $postedAt);
+        $qtd = preg_replace('/[^0-9]/', '', $postedAt);
+        $kindOfTime = preg_replace('/[^a-zA-Z]/', '', $postedAt);
+        
+        $exp = "-$qtd " . $times[$kindOfTime];
+        $date = new \DateTime();
+        $date->modify($exp);
+        return $date->format('Y-m-d');
     }
 }

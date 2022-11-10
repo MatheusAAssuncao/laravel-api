@@ -9,6 +9,19 @@ class Job extends Model
 {
     use HasFactory;
 
+    public static $returnable = [
+        'company',
+        'logo',
+        'new',
+        'featured',
+        'position',
+        'role',
+        'level',
+        'postedAt',
+        'contract',
+        'location',
+    ];
+
     public function languages()
     {
         return $this->belongsToMany(Language::class);

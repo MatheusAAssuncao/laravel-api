@@ -16,18 +16,65 @@ class JobController extends Controller
      */
     public function index(Request $request)
     {
-        $jobs = Job::with('languages', 'tools');
+        $jobs = Job::select(['id', 'logo', 'role', 'level', 'position', 'contract', 'postedAt']);
 
         if ($request->has('role')) {
-            $jobs->where('role', $request->role);
+            if (is_array($request->role)) {
+                $jobs->whereIn('role', $request->role);
+            } else {
+                $jobs->where('role', $request->role);
+            }
         }
 
         if ($request->has('level')) {
-            $jobs->where('level', $request->level);
+            if (is_array($request->level)) {
+                $jobs->whereIn('level', $request->level);
+            } else {
+                $jobs->where('level', $request->level);
+            }
         }
 
         if ($request->has('contract')) {
-            $jobs->where('contract', $request->contract);
+            if (is_array($request->contract)) {
+                $jobs->whereIn('contract', $request->contract);
+            } else {
+                $jobs->where('contract', $request->contract);
+            }
+        }
+
+        if ($request->has('languages')) {
+            if (is_array($request->languages)) {
+                $jobs->whereHas('languages', function ($query) use ($request) {
+                    $query->whereIn('name', $request->languages);
+                });
+            } else {
+                $jobs->whereHas('languages', function ($query) use ($request) {
+                    $query->where('name', $request->languages);
+                });
+            }
+        }
+
+        if ($request->has('tools')) {
+            if (is_array($request->tools)) {
+                $jobs->whereHas('tools', function ($query) use ($request) {
+                    $query->whereIn('name', $request->tools);
+                });
+            } else {
+                $jobs->whereHas('tools', function ($query) use ($request) {
+                    $query->where('name', $request->tools);
+                });
+            }
+        }
+
+        /**
+         * You can sort by “postedAt” and “position” (ascending and descending). Unlike
+         * filtering you can only sort by one field. “postedAt” descending should be considered the
+         * default if no sorting is sent.
+         */
+        if ($request->has('sort') && in_array($request->has('sort'), ['postedAt', 'position'])) {
+            $jobs->orderBy($request->sort, $this->_getValidOrder($request));
+        } else {
+            $jobs->orderBy('postedAt', $this->_getValidOrder($request));
         }
 
         return response()->json([
@@ -44,11 +91,21 @@ class JobController extends Controller
      */
     public function show(int $id)
     {
+        $columns = 
         $job = Job::with('tools', 'languages')->find($id);
 
         return response()->json([
             'status' => true,
             'data' => !empty($job) ? $job : []
         ], 200);
+    }
+
+    protected function _getValidOrder($request)
+    {
+        if (!$request->has('order') || is_array($request->order)) {
+            return 'desc';
+        }
+
+        return in_array($request->order, ['asc', 'desc']) ? $request->order : 'desc';
     }
 }
