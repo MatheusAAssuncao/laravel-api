@@ -1,0 +1,90 @@
+{
+	"info": {
+		"_postman_id": "cd8c7283-11e4-43fc-b987-ffbed76dfa24",
+		"name": "laravel-api",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "12662771"
+	},
+	"item": [
+		{
+			"name": "jobs list",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:9001/api/jobs?role=Frontend&tools=Sass&tools=React&languages=JavaScript&sort=position&order=asc",
+					"host": [
+						"localhost"
+					],
+					"port": "9001",
+					"path": [
+						"api",
+						"jobs"
+					],
+					"query": [
+						{
+							"key": "role",
+							"value": "Frontend"
+						},
+						{
+							"key": "level",
+							"value": "Junior",
+							"disabled": true
+						},
+						{
+							"key": "contract",
+							"value": "Full Time",
+							"disabled": true
+						},
+						{
+							"key": "tools",
+							"value": "Sass"
+						},
+						{
+							"key": "tools",
+							"value": "React"
+						},
+						{
+							"key": "languages",
+							"value": "JavaScript"
+						},
+						{
+							"key": "languages",
+							"value": null,
+							"disabled": true
+						},
+						{
+							"key": "sort",
+							"value": "position"
+						},
+						{
+							"key": "order",
+							"value": "asc"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "job detail",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:9001/api/jobs/10",
+					"host": [
+						"localhost"
+					],
+					"port": "9001",
+					"path": [
+						"api",
+						"jobs",
+						"10"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
