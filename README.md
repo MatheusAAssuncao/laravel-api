@@ -9,6 +9,7 @@ Project for studying API REST with Laravel and Mysql running in docker container
 
 - Populate database through Laravel Seeder with resource /database/seeders/data.json;
 - An endpoint that filtering and sorting;
+- A Postman file to import and test the endpoints at ./laravel-api.postman_collection.json
 
 ## Installation
 
